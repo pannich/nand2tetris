@@ -1,10 +1,10 @@
-# VM translator
+# VMtraslator_noBootStrap.py
 #
 # Nichada Wongrassamee
 
 from program0 import parseempty
 import sys
-import os, glob
+import os
 
 class Parser:
     """
@@ -13,37 +13,47 @@ class Parser:
     Args:
         filein (str.vm): input file
         fileout (str): <filepath>.out
-
-    Return:
-        parsed_files : list of files with .out extensions
     """
 
-    def __init__(self, vm_files) -> None:
-        self.vm_files = vm_files
+    def __init__(self, arg) -> None:
+        self.arg = arg
         self.ext = ".vm"
-        self.parsed_files = []
+        self.filename_no_ext = self.extract_filename()
+        self.in_file = f'{self.filename_no_ext}.vm'
+        self.out_file = f'{self.filename_no_ext}.out'
+
+    def extract_filename(self):
+        """
+        check if input file is .ext file
+
+        Return:
+            None if file not valid
+            filename if file has valid extension
+        """
+        try:
+            l_ = len(self.ext)
+            filename_no_ext = self.arg[:-l_]  # parse filename wihtout extension
+            extension = self.arg[(-l_):]
+            if extension != self.ext:
+                raise ValueError("File is not a .{self.ext} input")
+        except ValueError as e:
+            print(f"Error: {e}")
+            return None
+        return filename_no_ext
 
     def parse_comment(self):
-        for vm_fin in self.vm_files:
-            vm_fout = os.path.splitext(vm_fin)[0] + '.out'
-            self.parsed_files.append(vm_fout)
-            with open(f"{vm_fout}", "w") as fout:
-                with open(f"{vm_fin}", "r") as fd:
-                    comment = False  # comment status at the beginning of the file
-                    for line in fd:
-                        linenospace, comment = parseempty(line, comment)
-                        if linenospace and linenospace != "\n":
-                            # write to output file
-                            fout.write(linenospace)
-        return self.parsed_files
+        with open(f"{self.out_file}", "w") as fout:
+            with open(f"{self.in_file}", "r") as fd:
+                comment = False  # comment status at the beginning of the file
+                for line in fd:
+                    linenospace, comment = parseempty(line, comment)
+                    if linenospace and linenospace != "\n":
+                        # write to output file
+                        fout.write(linenospace)
+        return self.out_file
 
 class WriteASM:
     """generate the asm commands from vm insturctions
-    Attribute:
-    -filename_no_ext : use for writing static variable name
-
-    Return:
-        asm_command = String
 
     Raises:
         ValueError: unknown command
@@ -57,18 +67,11 @@ class WriteASM:
 
     operations = ["add", "sub", "neg", "eq", "gt" ,"lt", "and", "or", "not"]
 
-    def __init__(self, filename_no_ext=""):
+    def __init__(self, in_file):
         self.asm = ""
         self.bool_count = 0
-        self.filename_no_ext = filename_no_ext
+        self.filename_no_ext = in_file.split("/")[-1].replace(".out","")
         self.call_count = 0
-
-    def write_init(self):
-        self.asm += "@256\n"
-        self.asm += "D=A\n"
-        self.asm += "@SP\n"
-        self.asm += "M=D\n"
-        self.function_call(["call", "Sys.init", "0"]) # call Sys.init 0
 
     def set_address_A(self, args):
         # set A
@@ -277,18 +280,18 @@ class WriteASM:
         # Push return-address
         self.asm += f"@{ret_label}\n" # The assembler will decide where @ret_label lives
         self.asm += "D=A\n"
-        self.push_const_D()
+        self.push_const_D(self)
 
         # Push LCL, ARG, THIS, THAT
         for arg in ["LCL", "ARG", "THIS", "THAT"]:
             self.asm += f"@{arg}\n"
-            self.asm += "D=M\n"
-            self.push_const_D()
+            self.asm += "D=A\n"
+            self.push_const_D(self)
 
         # ARG = SP-n-5
         self.asm += "@SP\n"
-        self.asm += "D=M\n"
-        self.asm += f"@{int(n_) + 5}\n"
+        self.asm += "D+M\n"
+        self.asm += f"@{n_ + 5}"
         self.asm += "D=D-A\n"
         self.asm += "@ARG\n"
         self.asm += "M=D\n"
@@ -300,10 +303,10 @@ class WriteASM:
         self.asm += "M=D\n"
 
         # Goto functionName
-        self.program_flow(f"goto {func}".split())
+        self.program_flow(f"goto {func}")
 
         # (return-address)
-        self.asm += f"({ret_label})\n"
+        self.asm += f"({ret_label})"
 
     def function_return(self, args):
         """
@@ -353,25 +356,16 @@ class WriteASM:
         raise ValueError('{} is an invalid argument'.format(argument))
 
 class Translator:
-    """translate [<vm_no_comment_file_path>.out] files
+    """tramslate <filename>.out to <filename>.asm
     """
-    def __init__(self, in_file_list, out_file):
-        self.in_file_list = in_file_list
+    def __init__(self, in_file, out_file):
+        self.WriteASM = WriteASM(in_file)
+        self.in_file = in_file
         self.out_file = out_file
 
-        # Bootstrap during the initialization
-        self.WriteASM = WriteASM(out_file.split("/")[-1].replace(".asm",""))
-        self.WriteASM.write_init()
-
-        # Translate .out files no need to be in order
-        for parsed_file in self.in_file_list:
-            self.main(parsed_file)
-
-    def main(self, in_parsed_file):
-        filename_no_ext = in_parsed_file.split("/")[-1].replace(".out","")
-        self.WriteASM.filename_no_ext = filename_no_ext # use filename for creating static variable name
+    def main(self):
         with open(f"{self.out_file}", "w") as fout:
-            with open(f"{in_parsed_file}", "r") as fd:
+            with open(f"{self.in_file}", "r") as fd:
                 for line in fd:
                     instructions = line.split()
                     arg1 = instructions[0]
@@ -396,27 +390,14 @@ class Translator:
         return
 
 def main():
-    # get a list of vm_files
-    file_path = sys.argv[1]
-    file_path = file_path[:-1] if file_path[-1] == '/' else file_path
-
-    file_dir, _ext = os.path.splitext(file_path)
-    if _ext == '.vm':
-        vm_files = [file_path]
-    else:
-        pattern = os.path.join(file_path, '*.vm')
-        vm_files = glob.glob(pattern) # a list
-
-    if not vm_files:
-        print(f"Error: no .vm files in file path")
+    parser = Parser(sys.argv[1])
+    filename_no_ext = parser.filename_no_ext
+    if filename_no_ext is None:
         return
+    file_parsed_comment = parser.parse_comment() # <filename>.out
 
-    # parse comments and empty spaces
-    parser = Parser(vm_files)
-
-    parsed_files = parser.parse_comment() # ie. [tests/FunctionCalls/FibonacciElement/Main.out, ...]
-
-    translator = Translator(parsed_files, f"{file_dir}/{file_dir.split('/')[-1]}.asm")
+    translator = Translator(file_parsed_comment, f"{filename_no_ext}.asm")
+    translator.main()
 
     #clean up
     # os.remove(f"{filename_no_ext}.out")

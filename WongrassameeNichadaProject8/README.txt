@@ -7,14 +7,14 @@ Instructions for Compilation:
 
 Instructions for Running the Code:
 - Enter scr
-- Run `python src/VMtranslator.py <filename>.vm`
+- Run `python src/VMtranslator_pt2.py <file_path>`
 
 VM translator part 2
 
 Functionality:
-- parse arithmetic commands, and test using SimpleAdd and StackTest
-- parse memory access commands and test using BasicTest, PointerTest, and StaticTest
-- output .asm file
+- Implement and test program flow commands: BasicLoop (no bootstrap code needed; use .tst file), FibonacciSeries (no bootstrap code needed; use .tst file).
+- Implement and test function calls: SimpleFunction (no bootstrap code needed; use .tst file), FibonacciElement (requires bootstrap code), StaticsTest (requires bootstrap code).
+
 
 [List any known limitations or issues.]
 
