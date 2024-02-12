@@ -1,10 +1,2 @@
-function SimpleFunction.test 2
-push local 0
-push local 1
-add
-not
-push argument 0
-add
-push argument 1
-sub
-return
+| RAM[0] | RAM[1] | RAM[2] | RAM[3] | RAM[4] |RAM[310]|
+|    311 |    305 |    300 |   3010 |   4010 |   1196 |

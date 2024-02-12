@@ -280,18 +280,18 @@ class WriteASM:
         # Push return-address
         self.asm += f"@{ret_label}\n" # The assembler will decide where @ret_label lives
         self.asm += "D=A\n"
-        self.push_const_D(self)
+        self.push_const_D()
 
         # Push LCL, ARG, THIS, THAT
         for arg in ["LCL", "ARG", "THIS", "THAT"]:
             self.asm += f"@{arg}\n"
-            self.asm += "D=A\n"
-            self.push_const_D(self)
+            self.asm += "D=M\n"
+            self.push_const_D()
 
         # ARG = SP-n-5
         self.asm += "@SP\n"
-        self.asm += "D+M\n"
-        self.asm += f"@{n_ + 5}"
+        self.asm += "D=M\n"
+        self.asm += f"@{int(n_) + 5}\n"
         self.asm += "D=D-A\n"
         self.asm += "@ARG\n"
         self.asm += "M=D\n"
@@ -303,10 +303,10 @@ class WriteASM:
         self.asm += "M=D\n"
 
         # Goto functionName
-        self.program_flow(f"goto {func}")
+        self.program_flow(f"goto {func}".split())
 
         # (return-address)
-        self.asm += f"({ret_label})"
+        self.asm += f"({ret_label})\n"
 
     def function_return(self, args):
         """
@@ -399,8 +399,8 @@ def main():
     translator = Translator(file_parsed_comment, f"{filename_no_ext}.asm")
     translator.main()
 
-    #clean up
-    # os.remove(f"{filename_no_ext}.out")
+    # clean up
+    os.remove(f"{filename_no_ext}.out")
 
 if __name__ == "__main__":
     main()

@@ -403,9 +403,11 @@ def main():
     file_dir, _ext = os.path.splitext(file_path)
     if _ext == '.vm':
         vm_files = [file_path]
+        out_asm = file_dir + ".asm"
     else:
         pattern = os.path.join(file_path, '*.vm')
         vm_files = glob.glob(pattern) # a list
+        out_asm = f"{file_dir}/{file_dir.split('/')[-1]}.asm"
 
     if not vm_files:
         print(f"Error: no .vm files in file path")
@@ -416,7 +418,7 @@ def main():
 
     parsed_files = parser.parse_comment() # ie. [tests/FunctionCalls/FibonacciElement/Main.out, ...]
 
-    translator = Translator(parsed_files, f"{file_dir}/{file_dir.split('/')[-1]}.asm")
+    translator = Translator(parsed_files, out_asm)
 
     #clean up
     # os.remove(f"{filename_no_ext}.out")
