@@ -79,7 +79,7 @@ class WriteASM:
         if arg2 == "constant":
             self.asm += f'@{arg3}\n'
 
-        elif arg2 == "static": # TODO change this?? to Ball.move.number ?
+        elif arg2 == "static": # TODO change this?? to Ball.move.number or Filename.arg ? ASK
             self.asm += "@" + self.filename_no_ext + "." + arg3 + '\n'
 
         elif arg2 == "temp":
@@ -223,8 +223,12 @@ class WriteASM:
             self.raise_unknown(oper)
 
     # new
-    #TODO come here if args = 2 and "goto" sym @SYM , "if-goto" sym @SYM , "label" sym. (SYM)
     def program_flow(self, args):
+        """come here if nargs = 2 && args = ["goto", sym], ["if-goto", sym], ["label", sym]
+
+        Args:
+            args (list): one line instructions
+        """
         arg1, arg2 = args
         if arg1 == "goto":
             self.asm += f"@{arg2}\n" # load address to A register
@@ -273,9 +277,8 @@ class WriteASM:
         """
         arg1, func, n_ = args
 
-        ret_label = f"{self.filename_no_ext}.{func}.{self.call_count}" # Unique return label
+        ret_label = f"{self.filename_no_ext}.{func}.{self.call_count}" # Unique return label Ball.move.1
         self.call_count += 1
-        ## TODO ASK. CHANGE TO Ball.move.1 ??
 
         # Push return-address
         self.asm += f"@{ret_label}\n" # The assembler will decide where @ret_label lives
@@ -318,14 +321,13 @@ class WriteASM:
         # FRAME = LCL (FRAME is a temporary variable)
         self.asm += "@LCL\n"
         self.asm += "D=M\n"
-        self.asm += "@FRAME\n"  # The assembler will use the space after static to store value for FRAME.
-        self.asm += "M=D\n"
+        self.asm += "@FRAME\n"  # Store the return address (FRAME). Assembler will decide where it lives.
 
         # RET = *(FRAME - 5) (Put the return address in a temp var)
         self.asm += "@5\n"
         self.asm += "A=D-A\n"  # D still contains the value of LCL
         self.asm += "D=M\n"
-        self.asm += "@RET\n"  # Store the return address (RET) #ASK
+        self.asm += "@RET\n"  # Store the return address (RET). Assembler will decide where it lives.
         self.asm += "M=D\n"
 
         # *ARG = pop(), reposition the return value for the caller

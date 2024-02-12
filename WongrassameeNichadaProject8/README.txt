@@ -11,7 +11,7 @@ No-bootstrap
 - run `python src/VMtranslator_noBootStrap.py <file_path>`
 
 Bootstrap
-- run `python src/VMtranslator_pt2.py <file_path>`src/VMtranslator_noBootStrap.py
+- run `python src/VMtranslator_pt2.py <file_path>`
 
 =VM translator part 2=
 
