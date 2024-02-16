@@ -2,7 +2,7 @@
 D=A
 @SP
 M=D
-@StaticsTest.Sys.init.0
+@Sys.init.0
 D=A
 @SP
 AM=M+1
@@ -44,7 +44,7 @@ D=M
 M=D
 @Sys.init
 0;JMP
-(StaticsTest.Sys.init.0)
+(Sys.init.0)
 (Class1.set)
 @ARG
 D=M
@@ -193,7 +193,7 @@ D=A
 AM=M+1
 A=A-1
 M=D
-@Sys.Class1.set.1
+@Class1.set.1
 D=A
 @SP
 AM=M+1
@@ -235,7 +235,7 @@ D=M
 M=D
 @Class1.set
 0;JMP
-(Sys.Class1.set.1)
+(Class1.set.1)
 @SP
 AM=M-1
 D=M
@@ -253,7 +253,7 @@ D=A
 AM=M+1
 A=A-1
 M=D
-@Sys.Class2.set.2
+@Class2.set.2
 D=A
 @SP
 AM=M+1
@@ -295,13 +295,13 @@ D=M
 M=D
 @Class2.set
 0;JMP
-(Sys.Class2.set.2)
+(Class2.set.2)
 @SP
 AM=M-1
 D=M
 @5
 M=D
-@Sys.Class1.get.3
+@Class1.get.3
 D=A
 @SP
 AM=M+1
@@ -343,8 +343,8 @@ D=M
 M=D
 @Class1.get
 0;JMP
-(Sys.Class1.get.3)
-@Sys.Class2.get.4
+(Class1.get.3)
+@Class2.get.4
 D=A
 @SP
 AM=M+1
@@ -386,7 +386,7 @@ D=M
 M=D
 @Class2.get
 0;JMP
-(Sys.Class2.get.4)
+(Class2.get.4)
 (END)
 @END
 0;JMP

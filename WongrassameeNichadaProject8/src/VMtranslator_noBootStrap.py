@@ -322,6 +322,7 @@ class WriteASM:
         self.asm += "@LCL\n"
         self.asm += "D=M\n"
         self.asm += "@FRAME\n"  # Store the return address (FRAME). Assembler will decide where it lives.
+        self.asm += "M=D\n"
 
         # RET = *(FRAME - 5) (Put the return address in a temp var)
         self.asm += "@5\n"

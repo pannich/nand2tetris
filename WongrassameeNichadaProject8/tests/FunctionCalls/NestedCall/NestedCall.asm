@@ -2,7 +2,7 @@
 D=A
 @SP
 M=D
-@NestedCall.Sys.init.0
+@Sys.init.0
 D=A
 @SP
 AM=M+1
@@ -44,7 +44,7 @@ D=M
 M=D
 @Sys.init
 0;JMP
-(NestedCall.Sys.init.0)
+(Sys.init.0)
 (Sys.init)
 @4000
 D=A
@@ -68,7 +68,7 @@ AM=M-1
 D=M
 @THAT
 M=D
-@Sys.Sys.main.1
+@Sys.main.1
 D=A
 @SP
 AM=M+1
@@ -110,7 +110,7 @@ D=M
 M=D
 @Sys.main
 0;JMP
-(Sys.Sys.main.1)
+(Sys.main.1)
 @SP
 AM=M-1
 D=M
@@ -222,7 +222,7 @@ D=A
 AM=M+1
 A=A-1
 M=D
-@Sys.Sys.add12.2
+@Sys.add12.2
 D=A
 @SP
 AM=M+1
@@ -264,7 +264,7 @@ D=M
 M=D
 @Sys.add12
 0;JMP
-(Sys.Sys.add12.2)
+(Sys.add12.2)
 @SP
 AM=M-1
 D=M

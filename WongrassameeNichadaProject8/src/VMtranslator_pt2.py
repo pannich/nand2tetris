@@ -78,7 +78,7 @@ class WriteASM:
 
         elif arg2 == "static": # i.e. Ball.move.number
             self.asm += "@" + self.filename_no_ext + "." + arg3 + '\n'
-            print("@" + self.filename_no_ext + "." + arg3 + '\n')
+            # print("@" + self.filename_no_ext + "." + arg3 + '\n')
 
         elif arg2 == "temp":
             self.asm += '@' + str(5+int(arg3)) + '\n'
@@ -250,6 +250,7 @@ class WriteASM:
         - k: The number of local variables to set to 0
         """
         arg1, func, k = args
+
         # (f) declare function entry
         self.asm += f"({func})\n"
 
@@ -273,7 +274,7 @@ class WriteASM:
         """
         arg1, func, n_ = args
 
-        ret_label = f"{self.filename_no_ext}.{func}.{self.call_count}" # Unique return label i.e. Ball.move.1
+        ret_label = f"{func}.{self.call_count}" # Unique return label i.e. Ball.move.1
         self.call_count += 1
 
         # Push return-address
