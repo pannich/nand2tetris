@@ -45,7 +45,7 @@ class Snake {
       // do game.nextCycle();
     }
 
-    // do draw();
+    do draw();
 
     return this; // Return a reference to this newly created object
   }
