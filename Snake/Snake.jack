@@ -1,0 +1,153 @@
+class Snake {
+  field SnakeGame game;
+
+  field Array segments; // Array of Point objects representing the snake's body
+  field int direction; // The current direction of the snake
+  field int length; // Current length of the snake
+
+  field int currX;
+  field int currY;
+
+  field Array histX, histY;  // the history of the snake's movements
+  field int histSize;
+
+
+  constructor Snake new(SnakeGame agame, int startX, int startY, int startLength) {
+    var int i;
+    var Point temp;
+
+    let length = startLength;
+    let segments = Array.new(length);
+    let direction = 0; // Assume 0=right, 1=down, 2=left, 3=up as direction codes
+
+    // let currX = startX - length   // set current to tail, draw from tail to head
+    // let currY = startY
+
+    let histSize = 512;
+    let histX = Array.new(histSize);
+    let histY = Array.new(histSize);
+
+    let i = 0;
+
+    // initial snake
+    while( i < length ) {
+      let temp = Point.new(0,0);    // create a point, setX, Y for point
+      do temp.setX(startX - i);
+      do temp.setY(startY);
+
+      // let currX = currX + 1         // draw from tail to head
+
+      // do drawHead(game.getCycle());   // save history
+
+      let segments[i] = temp;       // save point to the snake segments
+      let i = i + 1;
+
+      // do game.nextCycle();
+    }
+
+    // do draw();
+
+    return this; // Return a reference to this newly created object
+  }
+
+  /** Sets the Snake's direction */
+  method void setDirection(int Adirection) {
+    let direction = Adirection;
+    return;
+  }
+
+
+  // gets the snake's length
+  method int getLength() {
+    return length;
+  }
+
+  // TODO
+  method void draw() {
+    var int i, segX, segY;
+    var Point temp;
+
+    // Draws the pixel using the color black
+    do Screen.setColor(true);
+
+    let i = 0;
+    // Iterate through each segment of the snake and draw it
+    while( i < length ) {
+      let temp = segments[i];
+      let segX = temp.getX();
+      let segY = temp.getY();
+      do Screen.drawPixel(segX, segY);
+      let i = i + 1;
+    }
+    return;
+  }
+
+
+  method void move() {
+    var int i;
+    var Point head, tail, temp;
+    var int newX, newY;
+
+    let head = segments[0];
+    let newX = head.getX();
+    let newY = head.getY();
+
+    let tail = segments[(length-1)];
+
+    // Move head in the current direction
+    if (direction = 0) {
+      let newX = head.getX() + 1;
+      } // Right
+    if (direction = 1) {
+      let newY = head.getY() + 1;
+      } // Down
+    if (direction = 2) {
+      let newX = head.getX() - 1;
+      } // Left
+    if (direction = 3) {
+      let newY = head.getY() - 1;
+      } // Up
+
+    do segments[0].setX(newX);
+    do segments[0].setY(newY);
+
+    // save head to history
+    // let histX[cycle] = head.getX();
+    // let histY[cycle] = head.getY();
+
+    // Move the rest of the body by one
+    let i = length - 1;
+    while (i > 1) {
+        let segments[i] = segments[(i - 1)]; // Move each segment to the position of the next
+        let i = i - 1;
+    }
+
+
+    // Set color to white to erase the last segment's previous position
+    do Screen.setColor(false);
+    do Screen.drawPixel(tail.getX(), tail.getY());
+
+    let i = length - 1;
+
+    while( i > 0 ) {
+      let temp = segments[i];
+      do Output.moveCursor(22,7);
+      do Output.printInt(temp.getX());
+      do Sys.wait(20);
+
+      do Output.moveCursor(22,14);
+      do Output.printInt(temp.getY());
+      do Screen.drawPixel(temp.getX(), temp.getY());
+      do Sys.wait(5);
+      let i = i-1;
+    }
+
+    // Now, draw the new head position
+    do Screen.setColor(true);
+    do Screen.drawPixel(head.getX(), head.getY());
+
+    return;
+  }
+
+
+}

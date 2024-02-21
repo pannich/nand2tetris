@@ -1,0 +1,110 @@
+class SnakeGame {
+  static SnakeGame instance; // A Pong game
+
+  field Snake snake;
+  field boolean exit;       // true when the game is over
+  field int score;          // ?
+  field int level;          // number of apple eaten
+
+  field int cycle;          // game cycle
+
+  // delay
+
+  /** Constructs a new snake game. */
+  constructor SnakeGame new() {
+    do Screen.clearScreen();
+
+    // set random seed here
+
+    // init game
+    let score = 0;
+    let level = 1;
+    let cycle = 0 ;  // for remembering snake position history
+    let exit = false;
+
+    // let delay = 100 ;
+
+    // create Snake (SnakeGame, startX, startY, startLength)
+    let snake = Snake.new(this, 200, 200, 48);
+
+    do Output.printString("Score: 0");
+
+    return this;
+  }
+
+  /** Creates an instance of a Snake game. */
+  function void newInstance() {
+      let instance = SnakeGame.new();
+      return;
+  }
+
+  /** Returns this Snake game. */
+  function SnakeGame getInstance() {
+      return instance;
+  }
+
+  /** --- Snake Game Properties ----*/
+  method int nextCycle() {
+        let cycle = cycle + 1;
+        return cycle;
+    }
+
+  method int getCycle() {
+        return cycle;
+    }
+
+  /** -------- Snake Run -----------*/
+  /** Starts the game, and handles inputs from the user that control
+     *  the Sanke's movement direction. */
+  method void run() {
+    var char key;
+
+    while (~exit) {
+      // waits for the key to be pressed.
+      while (key = 0) {
+            let key = Keyboard.keyPressed();
+            // make bat keep moving do
+            do snake.move();
+            // do apple.put
+
+            do Sys.wait(50);        // delay before run another cycle
+      }
+
+        // Array keypress
+        if (key = 132) { do snake.setDirection(0); }       // right
+      else {
+          if (key = 133) { do snake.setDirection(1); }      // down
+        else {
+            if (key = 130) { do snake.setDirection(2); }     // left
+          else {
+              if (key = 131) { do snake.setDirection(3); }    // up
+            else {
+              if (key = 140) { let exit = true; }
+            }
+          }
+        }
+        }
+
+        // try move snake
+
+
+        // eat food yet ?
+
+        // ------- Next Cycle ---------
+        // redraw food
+        do Sys.wait(50);
+        do nextCycle();
+
+        // Waits for the key to be released.
+        while ((~(key = 0)) & (~exit)) {
+            let key = Keyboard.keyPressed();
+            do snake.move();
+            do Sys.wait(50);
+        }
+
+
+    }
+
+    return;
+  }
+}

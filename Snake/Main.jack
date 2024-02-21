@@ -1,0 +1,10 @@
+/** Initializes a new Snake game and starts running it. */
+class Main {
+    function void main() {
+        var SnakeGame game;
+        do SnakeGame.newInstance();
+        let game = SnakeGame.getInstance();
+        do game.run();
+        return;
+    }
+}

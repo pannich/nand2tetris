@@ -1,0 +1,34 @@
+class Point {
+    field int x;
+    field int y;
+
+    // Constructor
+    constructor Point new(int ax, int ay) {
+        // Initialize the point with default values, if any
+        let x = ax; // Default x-coordinate
+        let y = ay; // Default y-coordinate
+        return this; // Return a reference to this object
+    }
+
+    // Method to set the x coordinate
+    method void setX(int newX) {
+        let x = newX;
+        return;
+    }
+
+    // Method to get the x coordinate
+    method int getX() {
+        return x;
+    }
+
+    // Method to set the y coordinate
+    method void setY(int newY) {
+        let y = newY;
+        return;
+    }
+
+    // Method to get the y coordinate
+    method int getY() {
+        return y;
+    }
+}
