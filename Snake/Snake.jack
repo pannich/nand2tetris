@@ -7,6 +7,8 @@ class Snake {
 
   field int currX;
   field int currY;
+  field Point head;
+  field Point prevTail;
 
   field Array histX, histY;  // the history of the snake's movements
   field int histSize;
@@ -20,9 +22,6 @@ class Snake {
     let segments = Array.new(length);
     let direction = 0; // Assume 0=right, 1=down, 2=left, 3=up as direction codes
 
-    // let currX = startX - length   // set current to tail, draw from tail to head
-    // let currY = startY
-
     let histSize = 512;
     let histX = Array.new(histSize);
     let histY = Array.new(histSize);
@@ -31,19 +30,13 @@ class Snake {
 
     // initial snake
     while( i < length ) {
-      let temp = Point.new(0,0);    // create a point, setX, Y for point
-      do temp.setX(startX - i);
-      do temp.setY(startY);
-
-      // let currX = currX + 1         // draw from tail to head
-
-      // do drawHead(game.getCycle());   // save history
-
+      let temp = Point.new((startX - i),startY);    // create a point, setX, Y for point
       let segments[i] = temp;       // save point to the snake segments
       let i = i + 1;
-
-      // do game.nextCycle();
     }
+
+    let head = segments[0]; // ASK is head the pointer to segments[0] or the value of segments[0]? Why error if i put it before setting segments value
+    let prevTail = segments[length-1];
 
     do draw();
 
@@ -56,43 +49,118 @@ class Snake {
     return;
   }
 
+  /** Deallocates the object's memory. */
+  method void dispose() {
+    do segments.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
 
   // gets the snake's length
   method int getLength() {
     return length;
   }
 
+  // set new snake segments as it grows
+  method void grow() {
+    var int i, newlength;
+    var Point temp;
+    var Array newSegments;
+
+    // copy over previous snake
+    // increase segments length
+    // new length according to current direction
+
+    let i = 0;
+    let newlength = length + 1;
+    let newSegments = Array.new(newlength);
+
+    while( i < length ) {
+        let temp = segments[i];    // create a point, setX, Y for point
+        let newSegments[i] = temp;       // save point to the snake segments
+        let i = i + 1;
+    }
+
+    let newSegments[newlength -1] = prevTail;
+    do drawSnakeBit(prevTail.getX(), prevTail.getY());
+
+    do segments.dispose();        // dispose old segments ASK ??
+
+    let segments = newSegments;   // replace with new
+    let length = newlength;
+
+    return;
+  }
+
+  // gets the snake's headX
+  method int getHead() {
+    return head;
+  }
+
+  // gets the snake's headX
+  method int getHeadX() {
+    return head.getX();
+  }
+
+  // gets the snake's headY
+  method int getHeadY() {
+    return head.getY();
+  }
+
+  method void drawSnakeBit(int x, int y) {
+
+    do Screen.setColor(true);
+
+    if (((x*4)+4 < 512) | ((y*4)+4 < 256)) {
+      do Screen.drawRectangle( x*4, y*4, (x*4)+4, (y*4)+4 );
+    }
+    return;
+  }
+
+  method void clearSnakeBit(int x, int y) {
+
+    do Screen.setColor(false);
+
+    if (((x*4)+4 < 512) | ((y*4)+4 < 256)) {
+      do Screen.drawRectangle( x*4, y*4, (x*4)+4, (y*4)+4 );
+    }
+    return;
+  }
+
   // TODO
   method void draw() {
-    var int i, segX, segY;
+    var int i;
     var Point temp;
-
-    // Draws the pixel using the color black
-    do Screen.setColor(true);
 
     let i = 0;
     // Iterate through each segment of the snake and draw it
     while( i < length ) {
       let temp = segments[i];
-      let segX = temp.getX();
-      let segY = temp.getY();
-      do Screen.drawPixel(segX, segY);
+      do drawSnakeBit(temp.getX(), temp.getY());
       let i = i + 1;
     }
     return;
   }
 
+  /** check if snake hit the wall */ // limitation: hitwall doesn't work bc pgm exits before display game over.
+  method boolean hitWall(int x, int y) {
+    if ( ((x*4) > 510) | ((y*4) > 254) | ((x*4)+4 > 510) | ((y*4)+4 > 254)) {
+      return true;
+    }
+  return false;
+  }
+
 
   method void move() {
     var int i;
-    var Point head, tail, temp;
+    var Point temp;
     var int newX, newY;
 
     let head = segments[0];
     let newX = head.getX();
     let newY = head.getY();
 
-    let tail = segments[(length-1)];
+    let prevTail = segments[(length-1)];
 
     // Move head in the current direction
     if (direction = 0) {
@@ -115,30 +183,29 @@ class Snake {
         let i = i - 1;
     }
 
+    // Set new head position
     let temp = Point.new(newX, newY);    // create a point, setX, Y for point
     let segments[0] = temp;
     let head = segments[0];
 
     // Set color to white to erase the last segment's previous position
     do Screen.setColor(false);
-    do Screen.drawPixel(tail.getX(), tail.getY());
+    do clearSnakeBit(prevTail.getX(), prevTail.getY());
 
-
-    // debugging
+    // debugging //
+    /**
     let i = length - 1;
     let temp = segments[i];
       do Output.moveCursor(22,7);
       do Output.printInt(temp.getX());
-      do Sys.wait(20);
-
       do Output.moveCursor(22,14);
       do Output.printInt(temp.getY());
       do Sys.wait(5);
-
+    */
 
     // Now, draw the new head position
     do Screen.setColor(true);
-    do Screen.drawPixel(head.getX(), head.getY());
+    do drawSnakeBit(head.getX(), head.getY());
 
     return;
   }

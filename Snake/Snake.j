@@ -206,3 +206,14 @@ class Snake {
       return;
 
   }
+
+
+-------------Apple
+// var boolean spaceFree;
+// check don't place food on the snake
+    let spaceFree = false;
+    while (~spaceFree){
+      if( ~ checkOccupied(apple.getAppleX(), apple.getAppleY()) ) {   // if not occupied go place the apple
+        let spaceFree = true;
+        }
+    }

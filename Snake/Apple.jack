@@ -1,0 +1,52 @@
+class Apple {
+  field Snake snake;
+
+  field int appleX, appleY;               // the Apple's screen location (in pixels)
+  field int sizeX, sizeY;       // size of grid
+
+  constructor Apple new(Snake aSnake, int aWidth, int aHeight){
+    let snake = aSnake;
+    let sizeX = (aWidth / 4);
+    let sizeY = (aHeight/ 4 );  // some padding
+    return this;
+  }
+
+  method void put() {
+    // set random position for apple
+    var int randX, randY;
+      let randX = Random.randRange(sizeX);
+      let randY = Random.randRange(sizeY);
+
+    let appleX = randX;
+    let appleY = randY;
+
+    do draw();
+
+    return;
+  }
+
+  method int getAppleX() {
+    return appleX;
+  }
+
+  method int getAppleY() {
+    return appleY;
+  }
+
+  method void draw() {
+    do Screen.setColor(true);
+    // do Screen.drawPixel(appleX, appleY);
+    do Screen.drawCircle((appleX*4)+2, (appleY*4)+2, 2);
+    return;
+  }
+
+  method boolean isEaten(int x, int y) {
+    if(( x = appleX ) & ( y = appleY )) {
+        return true;
+      }
+
+    return false;
+
+  }
+
+}

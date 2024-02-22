@@ -1,5 +1,5 @@
 function Snake.new 2
-push constant 9
+push constant 11
 call Memory.alloc 1
 pop pointer 0
 push argument 3
@@ -10,13 +10,13 @@ pop this 1
 push constant 0
 pop this 2
 push constant 512
+pop this 10
+push this 10
+call Array.new 1
 pop this 8
-push this 8
+push this 10
 call Array.new 1
-pop this 6
-push this 8
-call Array.new 1
-pop this 7
+pop this 9
 push constant 0
 pop local 0
 label WHILE_EXP0
@@ -25,20 +25,12 @@ push this 3
 lt
 not
 if-goto WHILE_END0
-push constant 0
-push constant 0
-call Point.new 2
-pop local 1
-push local 1
 push argument 1
 push local 0
 sub
-call Point.setX 2
-pop temp 0
-push local 1
 push argument 2
-call Point.setY 2
-pop temp 0
+call Point.new 2
+pop local 1
 push local 0
 push this 1
 add
@@ -53,6 +45,20 @@ add
 pop local 0
 goto WHILE_EXP0
 label WHILE_END0
+push constant 0
+push this 1
+add
+pop pointer 1
+push that 0
+pop this 6
+push this 3
+push constant 1
+sub
+push this 1
+add
+pop pointer 1
+push that 0
+pop this 7
 push pointer 0
 call Snake.draw 1
 pop temp 0
@@ -65,18 +71,197 @@ push argument 1
 pop this 2
 push constant 0
 return
+function Snake.dispose 0
+push argument 0
+pop pointer 0
+push this 1
+call Array.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
 function Snake.getLength 0
 push argument 0
 pop pointer 0
 push this 3
 return
-function Snake.draw 4
+function Snake.grow 4
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+push this 3
+push constant 1
+add
+pop local 1
+push local 1
+call Array.new 1
+pop local 3
+label WHILE_EXP0
+push local 0
+push this 3
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 0
+push local 3
+add
+push local 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 1
+push constant 1
+sub
+push local 3
+add
+push this 7
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push pointer 0
+push this 7
+call Point.getX 1
+push this 7
+call Point.getY 1
+call Snake.drawSnakeBit 3
+pop temp 0
+push this 1
+call Array.dispose 1
+pop temp 0
+push local 3
+pop this 1
+push local 1
+pop this 3
+push constant 0
+return
+function Snake.getHead 0
+push argument 0
+pop pointer 0
+push this 6
+return
+function Snake.getHeadX 0
+push argument 0
+pop pointer 0
+push this 6
+call Point.getX 1
+return
+function Snake.getHeadY 0
+push argument 0
+pop pointer 0
+push this 6
+call Point.getY 1
+return
+function Snake.drawSnakeBit 0
 push argument 0
 pop pointer 0
 push constant 0
 not
 call Screen.setColor 1
 pop temp 0
+push argument 1
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push constant 512
+lt
+push argument 2
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push constant 256
+lt
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+push constant 4
+call Math.multiply 2
+push argument 2
+push constant 4
+call Math.multiply 2
+push argument 1
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push argument 2
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Snake.clearSnakeBit 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push argument 1
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push constant 512
+lt
+push argument 2
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push constant 256
+lt
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+push constant 4
+call Math.multiply 2
+push argument 2
+push constant 4
+call Math.multiply 2
+push argument 1
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push argument 2
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Snake.draw 2
+push argument 0
+pop pointer 0
 push constant 0
 pop local 0
 label WHILE_EXP0
@@ -90,16 +275,13 @@ push this 1
 add
 pop pointer 1
 push that 0
-pop local 3
-push local 3
-call Point.getX 1
 pop local 1
-push local 3
-call Point.getY 1
-pop local 2
+push pointer 0
 push local 1
-push local 2
-call Screen.drawPixel 2
+call Point.getX 1
+push local 1
+call Point.getY 1
+call Snake.drawSnakeBit 3
 pop temp 0
 push local 0
 push constant 1
@@ -109,7 +291,46 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
-function Snake.move 6
+function Snake.hitWall 0
+push argument 0
+pop pointer 0
+push argument 1
+push constant 4
+call Math.multiply 2
+push constant 510
+gt
+push argument 2
+push constant 4
+call Math.multiply 2
+push constant 254
+gt
+or
+push argument 1
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push constant 510
+gt
+or
+push argument 2
+push constant 4
+call Math.multiply 2
+push constant 4
+add
+push constant 254
+gt
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return
+function Snake.move 4
 push argument 0
 pop pointer 0
 push constant 0
@@ -117,13 +338,13 @@ push this 1
 add
 pop pointer 1
 push that 0
-pop local 1
-push local 1
+pop this 6
+push this 6
 call Point.getX 1
-pop local 4
-push local 1
+pop local 2
+push this 6
 call Point.getY 1
-pop local 5
+pop local 3
 push this 3
 push constant 1
 sub
@@ -131,18 +352,18 @@ push this 1
 add
 pop pointer 1
 push that 0
-pop local 2
+pop this 7
 push this 2
 push constant 0
 eq
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push local 1
+push this 6
 call Point.getX 1
 push constant 1
 add
-pop local 4
+pop local 2
 label IF_FALSE0
 push this 2
 push constant 1
@@ -150,11 +371,11 @@ eq
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
-push local 1
+push this 6
 call Point.getY 1
 push constant 1
 add
-pop local 5
+pop local 3
 label IF_FALSE1
 push this 2
 push constant 2
@@ -162,11 +383,11 @@ eq
 if-goto IF_TRUE2
 goto IF_FALSE2
 label IF_TRUE2
-push local 1
+push this 6
 call Point.getX 1
 push constant 1
 sub
-pop local 4
+pop local 2
 label IF_FALSE2
 push this 2
 push constant 3
@@ -174,11 +395,11 @@ eq
 if-goto IF_TRUE3
 goto IF_FALSE3
 label IF_TRUE3
-push local 1
+push this 6
 call Point.getY 1
 push constant 1
 sub
-pop local 5
+pop local 3
 label IF_FALSE3
 push this 3
 push constant 1
@@ -210,14 +431,14 @@ sub
 pop local 0
 goto WHILE_EXP0
 label WHILE_END0
-push local 4
-push local 5
+push local 2
+push local 3
 call Point.new 2
-pop local 3
+pop local 1
 push constant 0
 push this 1
 add
-push local 3
+push local 1
 pop temp 0
 pop pointer 1
 push temp 0
@@ -227,57 +448,27 @@ push this 1
 add
 pop pointer 1
 push that 0
-pop local 1
+pop this 6
 push constant 0
 call Screen.setColor 1
 pop temp 0
-push local 2
+push pointer 0
+push this 7
 call Point.getX 1
-push local 2
+push this 7
 call Point.getY 1
-call Screen.drawPixel 2
-pop temp 0
-push this 3
-push constant 1
-sub
-pop local 0
-push local 0
-push this 1
-add
-pop pointer 1
-push that 0
-pop local 3
-push constant 22
-push constant 7
-call Output.moveCursor 2
-pop temp 0
-push local 3
-call Point.getX 1
-call Output.printInt 1
-pop temp 0
-push constant 20
-call Sys.wait 1
-pop temp 0
-push constant 22
-push constant 14
-call Output.moveCursor 2
-pop temp 0
-push local 3
-call Point.getY 1
-call Output.printInt 1
-pop temp 0
-push constant 5
-call Sys.wait 1
+call Snake.clearSnakeBit 3
 pop temp 0
 push constant 0
 not
 call Screen.setColor 1
 pop temp 0
-push local 1
+push pointer 0
+push this 6
 call Point.getX 1
-push local 1
+push this 6
 call Point.getY 1
-call Screen.drawPixel 2
+call Snake.drawSnakeBit 3
 pop temp 0
 push constant 0
 return
