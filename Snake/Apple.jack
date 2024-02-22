@@ -11,8 +11,15 @@ class Apple {
     return this;
   }
 
+  /** Deallocates the object's memory. */
+    method void dispose() {
+      do snake.dispose();
+      do Memory.deAlloc(this);
+      return;
+  }
+
+  /** Place apple randomly in the game */
   method void put() {
-    // set random position for apple
     var int randX, randY;
       let randX = Random.randRange(sizeX);
       let randY = Random.randRange(sizeY);
@@ -44,9 +51,7 @@ class Apple {
     if(( x = appleX ) & ( y = appleY )) {
         return true;
       }
-
     return false;
-
   }
 
 }

@@ -25,8 +25,6 @@ class SnakeGame {
     let exit = false;
     let delay = 50;
 
-    // let delay = 100 ;
-
     let snake = Snake.new(this, (512/4)/2 , (256/4)/2, 10);    // create Snake (SnakeGame, startX, startY, startLength)
     let apple = Apple.new(snake, 512, 256);
     do apple.put();               // initail apple
@@ -40,6 +38,15 @@ class SnakeGame {
     return this;
   }
 
+  /** ------- Utils --------*/
+  /** Disposes this game. */
+   method void dispose() {
+      do snake.dispose();
+      do apple.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
   /** Creates an instance of a Snake game. */
   function void newInstance() {
       let instance = SnakeGame.new();
@@ -52,15 +59,6 @@ class SnakeGame {
   }
 
   /** --- Snake Game Properties ----*/
-  method int nextCycle() {
-        let cycle = cycle + 1;
-        do Output.printInt(score);
-        return cycle;
-    }
-
-  method int getCycle() {
-        return cycle;
-    }
 
   method void nextLevel() {
 

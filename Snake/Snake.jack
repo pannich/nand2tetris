@@ -20,7 +20,7 @@ class Snake {
 
     let length = startLength;
     let segments = Array.new(length);
-    let direction = 0; // Assume 0=right, 1=down, 2=left, 3=up as direction codes
+    let direction = 0;              // Directions 0=right, 1=down, 2=left, 3=up
 
     let histSize = 512;
     let histX = Array.new(histSize);
@@ -31,7 +31,7 @@ class Snake {
     // initial snake
     while( i < length ) {
       let temp = Point.new((startX - i),startY);    // create a point, setX, Y for point
-      let segments[i] = temp;       // save point to the snake segments
+      let segments[i] = temp;       // Save point to the snake segments
       let i = i + 1;
     }
 
@@ -56,23 +56,25 @@ class Snake {
     return;
   }
 
-  // gets the snake's length
+  /** gets the snake's length */
   method int getLength() {
     return length;
   }
 
-  // set new snake segments as it grows
+  /** set new snake segments as it grows */
   method void grow() {
-    var int i, newlength;
+    /** copy over previous snake
+    * increase segments length
+    * new length according to current direction
+    */
+
+    var int i, newlength, newtailX, newtailY, togrow;
     var Point temp;
     var Array newSegments;
 
-    // copy over previous snake
-    // increase segments length
-    // new length according to current direction
-
     let i = 0;
-    let newlength = length + 1;
+    let togrow = 2;
+    let newlength = length + 2;
     let newSegments = Array.new(newlength);
 
     while( i < length ) {
@@ -81,8 +83,27 @@ class Snake {
         let i = i + 1;
     }
 
-    let newSegments[newlength -1] = prevTail;
-    do drawSnakeBit(prevTail.getX(), prevTail.getY());
+    // first grow
+      let newSegments[newlength - 2] = prevTail;
+      do drawSnakeBit(prevTail.getX(), prevTail.getY());
+      let togrow = togrow-1;
+
+    // second grow
+    while (togrow > 0){
+      let newtailX = prevTail.getX();
+      let newtailY = prevTail.getY();
+
+      // Determine the position of the new segment based on the snake's direction
+      if (direction = 0) { let newtailX = newtailX - 1; } // Move Right, add tail to left
+      if (direction = 1) { let newtailY = newtailY - 1; } // Moving Down, add new segment above
+      if (direction = 2) { let newtailX = newtailX + 1; } // Moving Left, add new segment to the right
+      if (direction = 3) { let newtailY = newtailY + 1; } // Moving Up, add new segment below
+
+      let prevTail = Point.new(newtailX, newtailY);
+      let newSegments[newlength - 1] = prevTail;
+
+      let togrow = togrow -1;
+    }
 
     do segments.dispose();        // dispose old segments ASK ??
 
@@ -92,23 +113,13 @@ class Snake {
     return;
   }
 
-  // gets the snake's headX
+  /** gets the snake's headX */
   method int getHead() {
     return head;
   }
 
-  // gets the snake's headX
-  method int getHeadX() {
-    return head.getX();
-  }
-
-  // gets the snake's headY
-  method int getHeadY() {
-    return head.getY();
-  }
-
+  /** Draw snake on 4x scale */
   method void drawSnakeBit(int x, int y) {
-
     do Screen.setColor(true);
 
     if (((x*4)+4 < 512) | ((y*4)+4 < 256)) {
@@ -117,8 +128,8 @@ class Snake {
     return;
   }
 
+  /** Clear snake on 4x scale */
   method void clearSnakeBit(int x, int y) {
-
     do Screen.setColor(false);
 
     if (((x*4)+4 < 512) | ((y*4)+4 < 256)) {
@@ -127,7 +138,6 @@ class Snake {
     return;
   }
 
-  // TODO
   method void draw() {
     var int i;
     var Point temp;

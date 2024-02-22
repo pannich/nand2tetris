@@ -5,6 +5,7 @@ class Main {
         do SnakeGame.newInstance();
         let game = SnakeGame.getInstance();
         do game.run();
+        do game.dispose();
         return;
     }
 }

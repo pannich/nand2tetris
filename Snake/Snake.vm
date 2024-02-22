@@ -87,18 +87,20 @@ push argument 0
 pop pointer 0
 push this 3
 return
-function Snake.grow 4
+function Snake.grow 7
 push argument 0
 pop pointer 0
 push constant 0
 pop local 0
+push constant 2
+pop local 4
 push this 3
-push constant 1
+push constant 2
 add
 pop local 1
 push local 1
 call Array.new 1
-pop local 3
+pop local 6
 label WHILE_EXP0
 push local 0
 push this 3
@@ -110,11 +112,11 @@ push this 1
 add
 pop pointer 1
 push that 0
-pop local 2
+pop local 5
 push local 0
-push local 3
+push local 6
 add
-push local 2
+push local 5
 pop temp 0
 pop pointer 1
 push temp 0
@@ -126,9 +128,9 @@ pop local 0
 goto WHILE_EXP0
 label WHILE_END0
 push local 1
-push constant 1
+push constant 2
 sub
-push local 3
+push local 6
 add
 push this 7
 pop temp 0
@@ -142,10 +144,90 @@ push this 7
 call Point.getY 1
 call Snake.drawSnakeBit 3
 pop temp 0
+push local 4
+push constant 1
+sub
+pop local 4
+label WHILE_EXP1
+push local 4
+push constant 0
+gt
+not
+if-goto WHILE_END1
+push this 7
+call Point.getX 1
+pop local 2
+push this 7
+call Point.getY 1
+pop local 3
+push this 2
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 2
+push constant 1
+sub
+pop local 2
+label IF_FALSE0
+push this 2
+push constant 1
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 3
+push constant 1
+sub
+pop local 3
+label IF_FALSE1
+push this 2
+push constant 2
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push local 2
+push constant 1
+add
+pop local 2
+label IF_FALSE2
+push this 2
+push constant 3
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push local 3
+push constant 1
+add
+pop local 3
+label IF_FALSE3
+push local 2
+push local 3
+call Point.new 2
+pop this 7
+push local 1
+push constant 1
+sub
+push local 6
+add
+push this 7
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 4
+push constant 1
+sub
+pop local 4
+goto WHILE_EXP1
+label WHILE_END1
 push this 1
 call Array.dispose 1
 pop temp 0
-push local 3
+push local 6
 pop this 1
 push local 1
 pop this 3
@@ -155,18 +237,6 @@ function Snake.getHead 0
 push argument 0
 pop pointer 0
 push this 6
-return
-function Snake.getHeadX 0
-push argument 0
-pop pointer 0
-push this 6
-call Point.getX 1
-return
-function Snake.getHeadY 0
-push argument 0
-pop pointer 0
-push this 6
-call Point.getY 1
 return
 function Snake.drawSnakeBit 0
 push argument 0
