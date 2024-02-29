@@ -173,7 +173,7 @@ class JackTokenizer:
         if self.curr_token in self.keyword_set:
             self.token_type = 'KEYWORD'
             self.out_file.write(f"<keyword> {self.curr_token} </keyword>\n")
-        elif self.curr_token:   # if not empty  #(TODO parse empty since the load_jack part)
+        elif self.curr_token:   # if not empty  #(parse empty since the load_jack part)
             self.token_type = 'IDENTIFIER'
             self.out_file.write(f"<identifier> {self.curr_token} </identifier>\n")
         return
@@ -216,7 +216,7 @@ class CompilationEngine:
     token_file : token file path
     """
     def __init__(self, tokenizer, output_stream):
-        self.tokenizer = tokenizer # TODO change to parsing the token file
+        self.tokenizer = tokenizer # TODO change to parsing the token file?
 
         self.output_stream = open(output_stream, 'w')
         self.indent_count = 0
@@ -243,7 +243,6 @@ class CompilationEngine:
             self.load_next_token_as_not_written()
 
         self.write_next_token() # '}'
-        print("--end compile class--")
 
         self.indent_count -= 1
         self.output_stream.write(f"{self.current_indent()}</class>\n")
@@ -309,7 +308,6 @@ class CompilationEngine:
 
     def compile_parameter_list(self):
         # Logic to compile a parameter list
-        print("compile parameter list")
         self.output_stream.write(f"{self.current_indent()}<parameterList>\n")
         self.indent_count += 1
 
@@ -317,9 +315,6 @@ class CompilationEngine:
         while self.tokenizer.curr_token != ')':
             self.write_next_token()       # parameterList things to skip
             self.load_next_token_as_not_written()
-            print("next", self.tokenizer.curr_token)
-
-        print("done parameter list")
 
         self.indent_count -= 1
         self.output_stream.write(f"{self.current_indent()}</parameterList>\n")
@@ -348,8 +343,6 @@ class CompilationEngine:
         # letStatement | ifStatement | whileStatement | doStatement | returnStatement
         self.output_stream.write(f"{self.current_indent()}<statements>\n")
         self.indent_count += 1
-
-        print("--compile statements--", self.tokenizer.curr_token)
 
         while self.tokenizer.curr_token in ('let', 'if', 'while', 'do', 'return'):
             if 'let' in self.tokenizer.curr_token:
@@ -392,14 +385,11 @@ class CompilationEngine:
         self.write_next_token()          # ')'
         self.write_next_token()          # ';'
 
-        print("finish compile do", self.tokenizer.curr_token)
-
         self.indent_count -= 1
         self.output_stream.write(f"{self.current_indent()}</doStatement>\n")
 
     def compile_let(self):
         # 'let' varName ('[' expression ']')? '=' expression ';'
-        # Logic to compile let statements
         self.output_stream.write(f"{self.current_indent()}<letStatement>\n")
         self.indent_count += 1
 
@@ -423,7 +413,6 @@ class CompilationEngine:
 
     def compile_while(self):
         # 'while' '(' expression ')' '{' statements '}'
-        print("TODO compile while")
         self.output_stream.write(f"{self.current_indent()}<whileStatement>\n")
         self.indent_count += 1
 
@@ -446,7 +435,6 @@ class CompilationEngine:
         pass
 
     def compile_return(self):
-        # Logic to compile return statements
         # 'return' expression? ';'
         self.output_stream.write(f"{self.current_indent()}<returnStatement>\n")
         self.indent_count += 1
@@ -458,7 +446,6 @@ class CompilationEngine:
             self.compile_expression()
 
         self.write_next_token()                         # ;
-        print("---finish return---")
 
         self.indent_count -= 1
         self.output_stream.write(f"{self.current_indent()}</returnStatement>\n")
@@ -511,7 +498,6 @@ class CompilationEngine:
         self.output_stream.write(f"{self.current_indent()}</expression>\n")
 
     def compile_term(self):
-        # Logic to compile terms
         # integerConstant | stringConstant | keywordConstant | varName |
         # varName '[' expression ']' | subroutineCall | '(' expression ')' | unaryOp term
         self.output_stream.write(f"{self.current_indent()}<term>\n")
@@ -520,9 +506,6 @@ class CompilationEngine:
         self.load_next_token_as_not_written()
 
         tokenType = self.tokenizer.token_type
-
-        print("---compile TERM---")
-
 
         if tokenType == 'INT_CONSTANT':
             self.compileIntegerConstant()
@@ -534,11 +517,9 @@ class CompilationEngine:
             # handle subroutinecall identifier '[' or ('(', '.'), else identifier
 
             peek = self.peek_token()
-            print(self.tokenizer.curr_token, tokenType, "peek", peek)
 
             if peek == '[':
-                # TODO compile array?
-                print("compile term varName '[' expression ']' ")
+                # compile term varName '[' expression ']' "
                 self.write_next_token()                 # varName
                 self.write_next_token()                 # '['
                 self.load_next_token_as_not_written()
@@ -566,7 +547,6 @@ class CompilationEngine:
                 self.load_next_token_as_not_written
                 self.compile_term()
             elif self.tokenizer.symbol() == '(':
-                print("get here!")
                 self.write_next_token()
                 self.compile_expression()
                 self.write_next_token()
@@ -575,7 +555,6 @@ class CompilationEngine:
             # Handle unexpected token type
             raise ValueError("Unexpected token type")
 
-        print("end compile term")
         self.load_next_token_as_not_written()           # advance
 
         self.indent_count -= 1
@@ -584,7 +563,6 @@ class CompilationEngine:
     def compile_expression_list(self):
         # Logic to compile expression lists (used in subroutine calls)
         # (expression (',' expression)* )? i.e. (x, y, x, y);
-        print("compile expressionList")
         self.output_stream.write(f"{self.current_indent()}<expressionList>\n")
         self.indent_count += 1
 
@@ -625,7 +603,7 @@ class CompilationEngine:
         self.load_next_token_as_not_written()
 
         # debug
-        print(f"// {self.current_indent()}<{self.tokenizer.token_type.lower()}> {self.tokenizer.curr_token} </{self.tokenizer.token_type.lower()}>\n")
+        # print(f"// {self.current_indent()}<{self.tokenizer.token_type.lower()}> {self.tokenizer.curr_token} </{self.tokenizer.token_type.lower()}>\n")
 
         # write xml
         self.output_stream.write(f"{self.current_indent()}<{self.tokenizer.token_type.lower()}> {self.tokenizer.curr_token} </{self.tokenizer.token_type.lower()}>\n")
@@ -653,7 +631,6 @@ def main():
     remove_comment = RemoveComment(sys.argv[1])
     filepath_parsed_comment = remove_comment.parse_comment() # <filepath>.out
 
-    # TODO change reload tokenizer
     tokenizer   = JackTokenizer(filepath_parsed_comment)
     compiler    = CompilationEngine(tokenizer, output_stream)
 
@@ -665,6 +642,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# TODO test tokenizer
