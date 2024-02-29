@@ -1,15 +1,31 @@
-class RandSeed {
+class Splash {
+  //field int memAddress;
+
+ // constructor Splash new() {
+  //  do drawSnake(12);
+ //   return this;
+ // }
 
     function int getSeed() {
-
         var int seed;
         var int key;
+        var int location;
+        var int memAddress;
 
         let seed = 0;
         let key = 0;
+        let location = 10;
 
+        // Display Splash Screen
         do Output.moveCursor(10, 22);
         do Output.printString("press a key to start");
+        do Output.moveCursor(14, 18);
+        do Output.printString("* Snake eats Apple");
+        do Output.moveCursor(16, 18);
+        do Output.printString("* Snake dies when it hits the wall");
+        do Output.moveCursor(18, 18);
+        do Output.printString("* Snake dies when it hits itself");
+
 
 
         while(~key) {

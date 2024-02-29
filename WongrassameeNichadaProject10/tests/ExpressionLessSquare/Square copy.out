@@ -1,0 +1,19 @@
+class Square {
+field int x, y;
+field int size;
+constructor Square new(int Ax, int Ay, int Asize) {
+let x = Ax;
+let y = Ay;
+let size = Asize;
+do draw();
+return x;
+}
+method void incSize() {
+if (x) {
+do erase();
+let size = size;
+do draw();
+}
+return;
+}
+}

@@ -16,7 +16,7 @@ class SnakeGame {
     do Screen.clearScreen();
 
     // set random seed here
-    do Random.setSeed(RandSeed.getSeed());
+    do Random.setSeed(Splash.getSeed());
 
     // init game
     let score = 0;
@@ -85,7 +85,7 @@ class SnakeGame {
           let key = Keyboard.keyPressed(); // Update key with the latest input
       }
 
-        // Array keypress, set new direction
+        // keypress, set new direction
         if (key = 132) { do snake.setDirection(0); }       // right
       else {
           if (key = 133) { do snake.setDirection(1); }      // down
@@ -113,6 +113,10 @@ class SnakeGame {
           do nextLevel();
           do apple.put();
           do snake.grow();
+        }
+
+        if (snake.hitSelf()){
+         let exit = true;
         }
 
         if (snake.hitWall(head.getX(), head.getY())) {

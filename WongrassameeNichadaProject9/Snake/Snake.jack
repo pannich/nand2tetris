@@ -10,10 +10,6 @@ class Snake {
   field Point head;
   field Point prevTail;
 
-  field Array histX, histY;  // the history of the snake's movements
-  field int histSize;
-
-
   constructor Snake new(SnakeGame agame, int startX, int startY, int startLength) {
     var int i;
     var Point temp;
@@ -21,10 +17,6 @@ class Snake {
     let length = startLength;
     let segments = Array.new(length);
     let direction = 0;              // Directions 0=right, 1=down, 2=left, 3=up
-
-    let histSize = 512;
-    let histX = Array.new(histSize);
-    let histY = Array.new(histSize);
 
     let i = 0;
 
@@ -158,6 +150,28 @@ class Snake {
       return true;
     }
   return false;
+  }
+
+  /** check if snake hit itself */
+  method boolean hitSelf() {
+    // initial snake
+    var int i, headX, headY, sX, sY;
+    var Point temp;
+
+    let i = 1;
+    let headX = head.getX();
+    let headY = head.getY();
+
+    while( i < length ) {
+      let temp = segments[i];
+      let sX = temp.getX();
+      let sY = temp.getY();
+      if ((headX = sX) & (headY = sY)){
+        return true;
+      }
+      let i = i+1;
+    }
+    return false;
   }
 
 

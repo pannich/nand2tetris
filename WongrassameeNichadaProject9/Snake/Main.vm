@@ -1,7 +1,5 @@
 function Main.main 1
-call SnakeGame.newInstance 0
-pop temp 0
-call SnakeGame.getInstance 0
+call SnakeGame.new 0
 pop local 0
 push local 0
 call SnakeGame.run 1

@@ -397,7 +397,7 @@ def main():
     filename_no_ext = parser.filename_no_ext
     if filename_no_ext is None:
         return
-    file_parsed_comment = parser.parse_comment() # <filename>.out
+    file_parsed_comment = parser.parse_comment() # <filepath>.out
 
     translator = Translator(file_parsed_comment, f"{filename_no_ext}.asm")
     translator.main()

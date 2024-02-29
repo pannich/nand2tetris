@@ -4,7 +4,7 @@ call Memory.alloc 1
 pop pointer 0
 call Screen.clearScreen 0
 pop temp 0
-call RandSeed.getSeed 0
+call Splash.getSeed 0
 call Random.setSeed 1
 pop temp 0
 push constant 0
@@ -255,45 +255,20 @@ call Snake.grow 1
 pop temp 0
 label IF_FALSE6
 push this 1
+call Snake.hitSelf 1
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 0
+not
+pop this 2
+label IF_FALSE7
+push this 1
 push local 1
 call Point.getX 1
 push local 1
 call Point.getY 1
 call Snake.hitWall 3
-if-goto IF_TRUE7
-goto IF_FALSE7
-label IF_TRUE7
-push constant 10
-push constant 27
-call Output.moveCursor 2
-pop temp 0
-push constant 9
-call String.new 1
-push constant 71
-call String.appendChar 2
-push constant 97
-call String.appendChar 2
-push constant 109
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-push constant 79
-call String.appendChar 2
-push constant 118
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-push constant 114
-call String.appendChar 2
-call Output.printString 1
-pop temp 0
-push constant 0
-not
-pop this 2
-label IF_FALSE7
-push this 2
 if-goto IF_TRUE8
 goto IF_FALSE8
 label IF_TRUE8
@@ -323,7 +298,41 @@ push constant 114
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
+push constant 0
+not
+pop this 2
 label IF_FALSE8
+push this 2
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
+push constant 10
+push constant 27
+call Output.moveCursor 2
+pop temp 0
+push constant 9
+call String.new 1
+push constant 71
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 109
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 118
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+label IF_FALSE9
 push this 6
 call Sys.wait 1
 pop temp 0
