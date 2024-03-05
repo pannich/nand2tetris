@@ -1,6 +1,8 @@
-# VMWriter
-#
-# Nichada Wongrassamee
+'''
+VMWriter
+
+Nichada Wongrassamee
+'''
 
 class VMWriter:
     """write .jack to .vm files

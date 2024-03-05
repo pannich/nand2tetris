@@ -1,4 +1,9 @@
-# rewrite for vm code, discard xml
+'''
+CompilationEngine
+
+Nichada Wongrassamee
+'''
+
 from SymbolTable import SymbolTable
 
 class CompilationEngine:
@@ -47,8 +52,6 @@ class CompilationEngine:
         while self.tokenizer.keyword() in ('static', 'field'):
             self.compile_class_var_dec()
 
-        print("class table", self.symbol_table.class_scope)
-
         while self.tokenizer.keyword() in ('constructor', 'function', 'method'):
             self.compile_subroutine()
 
@@ -78,16 +81,13 @@ class CompilationEngine:
             self.symbol_table.define(name, type, kind.upper())
 
         self.tokenizer.advance()                 # Skip ';'
-        print(self.tokenizer.curr_token)
 
     def compile_subroutine(self):
         # Logic to compile methods, functions, or constructors
         # subroutineDec: ('constructor' | 'function' | 'method') ('void' | type) subroutineName '(' parameterList ')' subroutineBody
         # subroutineBody: '{' varDec* statements '}'
 
-        print("--- begin subroutine ---")
-
-        print(self.tokenizer.curr_token)
+        # print("--- begin subroutine ---")
 
         # setup
         self.symbol_table.startSubroutine()
@@ -117,7 +117,6 @@ class CompilationEngine:
         # vm write
         num_locals = self.symbol_table.varCount('VAR')
 
-        print("\n\n", self.symbol_table.subroutine_scope)
         self.vm_writer.writeFunction(f'{self.class_name}.{subroutine_name}', num_locals)
 
         if subroutine_kind == 'constructor':
@@ -130,11 +129,9 @@ class CompilationEngine:
 
         self.compile_statements()                   # statements
 
-        print(">>>", self.tokenizer.curr_token)
-
         self.tokenizer.advance()                    # skip '}' closing subroutine
 
-        print("--- end subroutine --- \n\n\n")
+        # print("--- end subroutine --- \n\n\n")
 
         # -- end subroutineBody
 
@@ -189,8 +186,6 @@ class CompilationEngine:
             self.symbol_table.define(name, type, kind.upper())
 
         self.tokenizer.advance()  # Skip ';' at the end of the declaration
-        print(self.symbol_table.subroutine_scope)
-        print(self.symbol_table.class_scope)
 
 
     def compile_statements(self):
@@ -232,14 +227,13 @@ class CompilationEngine:
             raise ValueError(f"Missing closing ; compile_do. Curr is {self.tokenizer.curr_token}")
 
     def compile_subroutine_call(self):
-        print("--compile subroutinecall--")
+        # print("--compile subroutinecall--")
         nArgs = 0       # count no. args needed
         identifier = self.tokenizer.get_curr_token()    # subroutineName or ( className | varName)
         self.tokenizer.advance()
 
         if self.tokenizer.get_curr_token() == '.':      # identifier is ( instance | class )
             self.tokenizer.advance()                    # skip .
-            print("expecting print ", self.tokenizer.curr_token)
             if self.symbol_table.typeOf(identifier) is not None:
                 # is instance, already defined in symbol table
                 instance_kind = self.symbol_table.kindOf(identifier)
@@ -249,7 +243,6 @@ class CompilationEngine:
 
                 func_name = '{}.{}'.format(self.symbol_table.typeOf(identifier), self.tokenizer.get_curr_token())
                 nArgs += 1
-                print("TODO handle instance")
             else:
                 # is class (not defined in Sym table)
                 func_name = f'{identifier}.{self.tokenizer.get_curr_token()}'       # ( className | varName) '.' subroutineName
@@ -263,7 +256,7 @@ class CompilationEngine:
         # push arguments (if any)
         nArgs += self.compile_expression_list()                                     # ( expressionList )
 
-        print("-- end expression list -- ", self.tokenizer.curr_token)
+        # print("-- end expression list -- ", self.tokenizer.curr_token)
 
         self.vm_writer.writeCall(func_name, nArgs)                                 # call Screen.drawRectangle 4
 
@@ -292,8 +285,8 @@ class CompilationEngine:
         self.tokenizer.advance()                        # skip varName
 
         # check variable in symbol table
-        print("subroutine table", self.symbol_table.subroutine_scope)
-        print("class table", self.symbol_table.class_scope)
+        # print("subroutine table", self.symbol_table.subroutine_scope)
+        # print("class table", self.symbol_table.class_scope)
 
         if '[' in self.tokenizer.get_curr_token():
             # array assignment ('[' expression ']')?
@@ -426,7 +419,6 @@ class CompilationEngine:
         # if expression -> compile normally
         # if ( expression ) -> term will handle '(' and ')'
         self.compile_term()             # a
-        print("\n\n\n----- op: ", self.tokenizer.get_curr_token())
 
         while self.tokenizer.get_curr_token() in ('+', '-', '*', '/', '&', '|' , '<', '>', '='):
             op = self.tokenizer.get_curr_token()                        # op
@@ -441,10 +433,7 @@ class CompilationEngine:
             elif op == '/':
                 self.vm_writer.writeCall('Math.divide', 2)
 
-            # if self.tokenizer.get_curr_token() == ')':
-            #     print("exepection ')'", self.tokenizer.curr_token)
-            #     self.tokenizer.advance()
-        print("--- end expression -- curr :", self.tokenizer.get_curr_token())
+        # print("--- end expression -- curr :", self.tokenizer.get_curr_token())
 
 
 
@@ -455,10 +444,9 @@ class CompilationEngine:
 
         token = self.tokenizer.get_curr_token()
         tokenType = self.tokenizer.token_type
-        print(f"-- compile term -- name : {token} type: {tokenType}--")
+        # print(f"-- compile term -- name : {token} type: {tokenType}--")
 
         if tokenType == 'INT_CONSTANT':
-            # print("expecting int ", self.tokenizer.get_curr_token())
             self.vm_writer.writePush('CONST', token)
             self.tokenizer.advance()
         elif tokenType == 'STRING_CONSTANT':
@@ -483,7 +471,6 @@ class CompilationEngine:
             elif token == '(':
                 self.tokenizer.advance()                # (
                 self.compile_expression()
-                print("~~~~closing ) in term", self.tokenizer.curr_token)
                 self.tokenizer.advance()                # )
         elif tokenType == 'IDENTIFIER':
             # handle variable , array, subroutineCall
@@ -522,7 +509,6 @@ class CompilationEngine:
                 else :
                     # push symbol
                     self.vm_writer.writePush(self.VM_KIND[kind], self.symbol_table.indexOf(token))
-                    print(f"push {self.tokenizer.curr_token}")
                 self.tokenizer.advance()
 
         else:
@@ -533,7 +519,7 @@ class CompilationEngine:
     def compile_expression_list(self):
         # Logic to compile expression lists (used in subroutine calls)
         # (expression (',' expression)* )? i.e. (x, y, Ax, Ay);
-        print("--compile expression list --")
+        # print("--compile expression list --")
         nArgs = 0
         if self.tokenizer.get_curr_token() == '(':
             self.tokenizer.advance()                            # skip '('
@@ -547,7 +533,6 @@ class CompilationEngine:
                 self.compile_expression()                   # expression
 
                 nArgs += 1
-                print("\t>>>getting next args cur: " ,self.tokenizer.curr_token)
 
         if self.tokenizer.get_curr_token() == ')':
             self.tokenizer.advance()

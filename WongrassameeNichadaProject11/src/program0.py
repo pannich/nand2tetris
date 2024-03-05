@@ -1,3 +1,10 @@
+
+'''
+program0 - parse comments
+
+Nichada Wongrassamee
+'''
+
 import sys
 
 filename = sys.argv[1][:-3] # parse filename

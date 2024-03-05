@@ -1,5 +1,16 @@
+'''
+SymbolTable
+
+Nichada Wongrassamee
+'''
+
 class SymbolTable:
-    # hash table { 'name' : (type, kind, index) }
+    """contain 2 hash tables
+    - class symbol table
+    - subroutine symbol table
+
+    hash table = { 'name' : (type, kind, index) }
+    """
 
     def __init__(self):
         self.counts             = {}

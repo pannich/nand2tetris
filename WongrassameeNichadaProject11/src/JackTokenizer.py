@@ -63,7 +63,7 @@ class JackTokenizer:
 
     def advance(self):
         next_token = self.jack.popleft()
-        print(f"->{next_token}")
+        # print(f"->{next_token}")
 
         # Symbol
         if next_token[0] in self.symbol_set:
@@ -90,12 +90,10 @@ class JackTokenizer:
                     self.out_file.write(f"<integerConstant> {self.curr_token} </integerConstant>\n")
                     if next_token[i:]: # if has more to parse, push it back to self.jack
                         self.jack.appendleft(next_token[i:])
-                        print("integer: " , self.curr_token, self.token_type)
                         return
             # if the whole next_token is digit
             self.curr_token = next_token
             self.out_file.write(f"<integerConstant> {self.curr_token} </integerConstant>\n")
-            print("integer: " , self.curr_token, self.token_type)
             return
 
         # String Constant

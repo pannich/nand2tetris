@@ -1,3 +1,9 @@
+'''
+JackCompiler - Main
+
+Nichada Wongrassamee
+'''
+
 from program0 import parseempty
 import sys, os, glob
 from JackTokenizer import JackTokenizer
