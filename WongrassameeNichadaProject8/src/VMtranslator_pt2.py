@@ -404,10 +404,10 @@ def main():
     file_path = file_path[:-1] if file_path[-1] == '/' else file_path
 
     file_dir, _ext = os.path.splitext(file_path)
-    if _ext == '.vm':
+    if _ext == '.vm':    # a single file
         vm_files = [file_path]
         out_asm = file_dir + ".asm"
-    else:
+    else:   # a directory
         pattern = os.path.join(file_path, '*.vm')
         vm_files = glob.glob(pattern) # a list
         out_asm = f"{file_dir}/{file_dir.split('/')[-1]}.asm"

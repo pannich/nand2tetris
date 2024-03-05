@@ -1,0 +1,16 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/11/Square/Main.jack
+
+/** Initializes a new Square Dance game and starts running it. */
+class Main {
+    function void main() {
+        var SquareGame game;
+        let game = SquareGame.new();
+        do game.run();      //  calling instance push local 0 ('this'), call SquareGame.run 1
+                            //  calling an instance method requires the object (instance) on which the method is called to be the first argument of the method.
+        do game.dispose();
+        return;
+    }
+}

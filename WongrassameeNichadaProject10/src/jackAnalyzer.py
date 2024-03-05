@@ -105,6 +105,7 @@ class JackTokenizer:
         # `if has_more_tokens`` return False if self.jack is an empty queue
         if not self.jack:
             self.out_file.write(f"</tokens>\n")         # close file
+            self.out_file.close()                       # new 
         return self.jack
 
     def advance(self):
